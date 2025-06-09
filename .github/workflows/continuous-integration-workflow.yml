@@ -728,7 +728,7 @@ jobs:
     needs: [aioxmpp, connectivity, smack, check_branch, hsqldb-install, hsqldb-upgrade, sqlserver-install, sqlserver-upgrade, postgres-install, postgres-upgrade, mysql-install, mysql-upgrade, oracle-install, oracle-upgrade]
     if: |
       github.event_name == 'push' && 
-      (contains(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main')
+      (contains(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.ref == 'ref/heads/docker-cache')
 
     permissions:
       contents: read
