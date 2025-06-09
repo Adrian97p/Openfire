@@ -51,6 +51,8 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import org.xmlpull.v1.XmlPullParser;
+
 /**
  * SASLAuthentication is responsible for returning the available SASL mechanisms to use and for
  * actually performing the SASL authentication.<p>
@@ -242,6 +244,10 @@ public class SASLAuthentication {
     {
         if ( session instanceof ClientSession )
         {
+            // MOD apex
+            if (!session.isForceStandardSASL())
+                return null;
+
             return getSASLMechanismsElement( (ClientSession) session );
         }
         else if ( session instanceof LocalIncomingServerSession )
@@ -253,6 +259,27 @@ public class SASLAuthentication {
             Log.debug( "Unable to determine SASL mechanisms that are applicable to session '{}'. Unrecognized session type.", session );
             return null;
         }
+    }
+
+    /**
+    * Returns a string with the valid SASL mechanisms available for the specified session. If
+     * the session's connection is not secured then only include the SASL mechanisms that don't
+     * require TLS.
+     *
+     * @param session The current session
+     *
+     * @return a string with the valid SASL mechanisms available for the specified session.
+    */
+    public static Element getSASLMechanisms(LocalSession session, XmlPullParser xpp)
+    {
+        // MOD apex
+        String from = xpp.getAttributeValue("", "from");
+
+        if (from != null) {
+            session.setForceStandardSASL(from.contains(".engine.engine"));
+        }
+
+        return getSASLMechanisms(session);
     }
 
     public static Element getSASLMechanismsElement( ClientSession session )

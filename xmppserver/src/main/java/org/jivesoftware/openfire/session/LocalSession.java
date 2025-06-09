@@ -59,6 +59,7 @@ public abstract class LocalSession implements Session {
     @Nonnull
     protected JID address;
 
+    private boolean forceStandardSASL = false;
     /**
      * The stream id for this session (random and unique).
      */
@@ -109,6 +110,14 @@ public abstract class LocalSession implements Session {
     private final Lock lock = new ReentrantLock();
 
     private final Locale language;
+
+    public boolean isForceStandardSASL() {
+        return forceStandardSASL;
+    }
+
+    public void setForceStandardSASL(boolean forceStandardSASL) {
+        this.forceStandardSASL = forceStandardSASL;
+    }
 
     /**
      * Creates a session with an underlying connection and permission protection.
